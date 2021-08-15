@@ -10,7 +10,7 @@
 
     <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item ">
                 <a class="nav-link" href="./index.php">Home <span class="sr-only">(current)</span></a>
             </li>
 
@@ -19,7 +19,7 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
+            <li class="nav-item ">
                 <a class="nav-link" href="./register_homecook_form.php">Become a Cook</a>
             </li>
             <?php
@@ -41,8 +41,11 @@
                     <?php
                 }else{
                     ?>
-                        <li class="nav-item active">
+                        <li class="nav-item ">
                             <a class="nav-link" href="./login.php">Login</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="./signup.php">Signup</a>
                         </li>
                     <?php
                 }
