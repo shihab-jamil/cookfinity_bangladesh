@@ -8,7 +8,7 @@
     $password = md5(constant('SALT').$_POST['password'].constant('SALT'));
     $phone_number = $_POST['phone_number'];
     $image = $_POST['image'];
-    $platform_role = 5; // 3 refers to consumer
+    $platform_role = 5; // 5 refers to consumer
 
     $target_path = "./images/profiles/";
 
