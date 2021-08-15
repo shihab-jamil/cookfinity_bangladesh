@@ -29,6 +29,15 @@
         return mysqli_query($con, $query);
     }
 
+    function get_max_id_for_add($table_name){
+        $con = $GLOBALS['con'];
+        $query = "SELECT MAX(id) FROM $table_name";
+        $id = mysqli_fetch_array(mysqli_query($con, $query));
+        $id = $id['MAX(id)'];
+        $id = intval($id) + 1;
+        return $id;
+    }
+
 
 
 ?>
