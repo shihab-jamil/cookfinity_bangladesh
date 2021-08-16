@@ -91,6 +91,11 @@
         
     }
 
-
+    function get_single_table_record($table_name, $column_name, $value){
+        $con = $GLOBALS['con'];
+        $query = "SELECT * FROM $table_name WHERE $column_name='$value'";
+        return mysqli_fetch_array(mysqli_query($con, $query));
+        
+    }
 
 ?>
