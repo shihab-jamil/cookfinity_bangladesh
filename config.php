@@ -43,69 +43,51 @@
         switch ($criteria) {
             case 'consumer':
                 $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Consumer'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'homecook':
                 $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Home Cook'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'supplier':
                 $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Supplier'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'admin':
                 $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Admin' OR rol.role_name='Super Admin'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'pending':
                 $query = "SELECT COUNT(*) FROM users AS us JOIN approval AS app ON us.id = app.uid JOIN roles AS rol ON us.platform_role_id = rol.id WHERE app.status = 'Pending' AND rol.role_name = 'Home Cook'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'approved':
                 $query = "SELECT COUNT(*) FROM users AS us JOIN approval AS app ON us.id = app.uid JOIN roles AS rol ON us.platform_role_id = rol.id WHERE app.status = 'Approved' AND rol.role_name = 'Home Cook'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'all_requests':
                 $query = "SELECT COUNT(*) FROM requests ";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'meals':
                 $query = "SELECT COUNT(*) FROM meal ";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'active_requests':
                 $query = "SELECT COUNT(*) FROM requests WHERE `status`= 'opened'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             case 'closed_requests':
                 $query = "SELECT COUNT(*) FROM requests WHERE `status`= 'closed'";
-                $result = mysqli_fetch_array(mysqli_query($con, $query));
-                return $result['COUNT(*)'];
                 break;
             
             default:
-                return 'N/A';
+                $query = "SELECT COUNT(*) FROM $criteria";
                 break;
         }
 
+        $result = mysqli_fetch_array(mysqli_query($con, $query));
+        return $result['COUNT(*)'];
         
     }
 
