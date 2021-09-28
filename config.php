@@ -37,6 +37,167 @@
         $id = intval($id) + 1;
         return $id;
     }
+
+    function count_badges($criteria){
+        $con = $GLOBALS['con'];
+        switch ($criteria) {
+            case 'consumer':
+                $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Consumer'";
+                break;
+            
+            case 'homecook':
+                $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Home Cook'";
+                break;
+            
+            case 'supplier':
+                $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Supplier'";
+                break;
+            
+            case 'admin':
+                $query = "SELECT COUNT(*) FROM users AS us JOIN roles AS rol ON us.platform_role_id=rol.id WHERE rol.role_name='Admin' OR rol.role_name='Super Admin'";
+                break;
+            
+            case 'pending':
+                $query = "SELECT COUNT(*) FROM users AS us JOIN approval AS app ON us.id = app.uid JOIN roles AS rol ON us.platform_role_id = rol.id WHERE app.status = 'Pending' AND rol.role_name = 'Home Cook'";
+                break;
+            
+            case 'approved':
+                $query = "SELECT COUNT(*) FROM users AS us JOIN approval AS app ON us.id = app.uid JOIN roles AS rol ON us.platform_role_id = rol.id WHERE app.status = 'Approved' AND rol.role_name = 'Home Cook'";
+                break;
+            
+            case 'all_requests':
+                $query = "SELECT COUNT(*) FROM requests ";
+                break;
+            
+            case 'meals':
+                $query = "SELECT COUNT(*) FROM meal ";
+                break;
+            
+            case 'active_requests':
+                $query = "SELECT COUNT(*) FROM requests WHERE `status`= 'opened'";
+                break;
+            
+            case 'closed_requests':
+                $query = "SELECT COUNT(*) FROM requests WHERE `status`= 'closed'";
+                break;
+            
+            default:
+                $query = "SELECT COUNT(*) FROM $criteria";
+                break;
+        }
+
+        $result = mysqli_fetch_array(mysqli_query($con, $query));
+        return $result['COUNT(*)'];
+        
+    }
+
+    function get_single_table_record($table_name, $column_name, $value){
+        $con = $GLOBALS['con'];
+        $query = "SELECT * FROM $table_name WHERE $column_name='$value'";
+        return mysqli_fetch_array(mysqli_query($con, $query));
+        
+    }
+
+    function show_sweet_alert($session_name, $msg_success, $msg_error, $msg_warning, $msg_info, $msg_qstn){
+        if(isset($_SESSION[$session_name]) && $_SESSION[$session_name] == 'success'){
+            unset($_SESSION[$session_name]);
+            echo "<script>var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                    })
+
+                    Toast.fire({
+                    icon: 'success',
+                    title:'".$msg_success."'
+                    })</script>";
+
+        }else if(isset($_SESSION[$session_name]) && $_SESSION[$session_name] == 'error'){
+            unset($_SESSION[$session_name]);
+            echo "<script>var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                    })
+
+                    Toast.fire({
+                    icon: 'error',
+                    title:'".$msg_error."'
+                    })</script>";
+        }else if(isset($_SESSION[$session_name]) && $_SESSION[$session_name] == 'warning'){
+            unset($_SESSION[$session_name]);
+            echo "<script>var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                    })
+
+                    Toast.fire({
+                    icon: 'warning',
+                    title:'".$msg_warning."'
+                    })</script>";
+        }else if(isset($_SESSION[$session_name]) && $_SESSION[$session_name] == 'info'){
+            unset($_SESSION[$session_name]);
+            echo "<script>var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                    })
+
+                    Toast.fire({
+                    icon: 'info',
+                    title:'".$msg_info."'
+                    })</script>";
+        }else if(isset($_SESSION[$session_name]) && $_SESSION[$session_name] == 'qstn'){
+            unset($_SESSION[$session_name]);
+            echo "<script>var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                    })
+
+                    Toast.fire({
+                    icon: 'question',
+                    title:'".$msg_qstn."'
+                    })</script>";
+        }
+    }
+
+    function get_approval_list(){
+        $con = $GLOBALS['con'];
+        $query = "SELECT app.id, CONCAT(us.first_name, ' ', us.last_name) AS 'name', rol.role_name, us.email, us.phone_number, app.status, app.approved_by_uid FROM users AS us JOIN approval AS app ON us.id = app.uid JOIN roles AS rol ON us.platform_role_id = rol.id WHERE rol.role_name = 'Home Cook' ORDER BY app.status DESC";
+        return mysqli_query($con, $query);
+    }
     function insert_order($req_id){
         $details = get_single_table_record('requests', 'id', $req_id);
 
@@ -60,6 +221,5 @@
        mysqli_query($con, $query2);
        
    }
-
 
 ?>
