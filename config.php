@@ -230,18 +230,18 @@
    }
 
    function time_conversion($time){
-        $time = explode(":",$time);
-        $time[0] = intval($time[0]);
-        $str = '';
-        if($time[0] > 12){
-                $time[0] = $time[0] - 12;
-                $str .= 'PM';
-            }else{
-                $str .= 'AM';
-            }
-
-        return $time[0].':'.$time[1].' '.$str;
+    $time = explode(":",$time);
+    $time[0] = intval($time[0]);
+    $str = '';
+    if($time[0] > 12){
+        $time[0] = $time[0] - 12;
+        $str .= 'PM';
+    }else{
+        $str .= 'AM';
     }
+
+    return $time[0].':'.$time[1].' '.$str;
+   }
 
     function count_badges_per_user($criteria, $uid){
         $con = $GLOBALS['con'];
@@ -315,6 +315,53 @@
     function get_users_per_role($role_id){
         $con = $GLOBALS['con'];
         $query = "SELECT * FROM users WHERE platform_role_id=$role_id";
+        return mysqli_query($con, $query);
+    }
+
+     function get_order_table($criteria,$uid){
+        $con = $GLOBALS['con'];
+        switch ($criteria) {
+            case 'all':
+                $query = "SELECT ord.*,CONCAT(us.first_name,' ',us.last_name) AS 'name', ml.title AS 'meal_title' , us.phone_number FROM orders AS ord JOIN users AS us ON ord.ordered_by_uid=us.id JOIN meal AS ml ON ord.meal_id=ml.id WHERE ml.uid=$uid";
+                return mysqli_query($con, $query);
+                break;
+            case 'active':
+                $query = "SELECT ord.*,CONCAT(us.first_name,' ',us.last_name) AS 'name', ml.title AS 'meal_title' , us.phone_number FROM orders AS ord JOIN users AS us ON ord.ordered_by_uid=us.id JOIN meal AS ml ON ord.meal_id=ml.id WHERE ord.status='Active' AND  ml.uid=$uid";
+                return mysqli_query($con, $query);
+                break;
+                
+            case 'completed':
+                $query = "SELECT ord.*,CONCAT(us.first_name,' ',us.last_name) AS 'name', ml.title AS 'meal_title' , us.phone_number FROM orders AS ord JOIN users AS us ON ord.ordered_by_uid=us.id JOIN meal AS ml ON ord.meal_id=ml.id WHERE ord.status='completed' AND  ml.uid=$uid";
+                return mysqli_query($con, $query);
+                break;
+
+            case 'pending':
+                $query = "SELECT ord.*,CONCAT(us.first_name,' ',us.last_name) AS 'name', ml.title AS 'meal_title' , us.phone_number FROM orders AS ord JOIN users AS us ON ord.ordered_by_uid=us.id JOIN meal AS ml ON ord.meal_id=ml.id WHERE ord.status='pending' AND  ml.uid=$uid";
+                return mysqli_query($con, $query);
+                break;
+
+            default:
+                # code...
+                break;
+        }
+    }
+
+    function get_request_details(){
+        $con = $GLOBALS['con'];
+        $query = "SELECT us.phone_number, CONCAT(us.first_name,' ',us.last_name) AS 'name', rq.* FROM requests AS rq JOIN users AS us ON rq.requested_by_uid=us.id ORDER BY rq.status ASC";
+        return mysqli_query($con, $query);
+    }
+
+    function get_response_details(){
+        $con = $GLOBALS['con'];
+        $query = "SELECT CONCAT(us.first_name,' ',us.last_name) AS 'name', rq.meal_title, rs.status, rs.price FROM requests AS rq JOIN response AS rs ON rs.request_id=rq.id JOIN users AS us ON rq.requested_by_uid=us.id WHERE rq.status='Opened' ORDER BY rs.status DESC";
+        return mysqli_query($con, $query);
+    }
+
+    
+    function get_response_details_per_user($uid){
+        $con = $GLOBALS['con'];
+        $query = "SELECT rs.request_id, CONCAT(us.first_name,' ',us.last_name) AS 'name', rq.meal_title, rs.status, rs.price FROM requests AS rq JOIN response AS rs ON rs.request_id=rq.id JOIN users AS us ON rs.responsed_by_uid=us.id WHERE rs.status='reviewing' AND rq.requested_by_uid=$uid ORDER BY rs.status DESC";
         return mysqli_query($con, $query);
     }
 
