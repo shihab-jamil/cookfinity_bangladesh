@@ -243,5 +243,74 @@
         return $time[0].':'.$time[1].' '.$str;
     }
 
+    function count_badges_per_user($criteria, $uid){
+        $con = $GLOBALS['con'];
+        switch ($criteria) {
+            case 'total_meal':
+                $query = "SELECT COUNT(*) FROM meal WHERE `uid`=$uid";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+
+                break;
+            case 'ongoing':
+                $query = "SELECT COUNT(*) FROM meal WHERE `uid`=$uid AND CURDATE() <= expire_date";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'expired':
+                $query = "SELECT COUNT(*) FROM meal WHERE `uid`=$uid AND CURDATE() > expire_date";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'total_order':
+                $query = "SELECT COUNT(*) FROM orders AS ord  JOIN meal AS ml ON ord.meal_id=ml.id WHERE ml.uid=$uid";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'active_order':
+                $query = "SELECT COUNT(*) FROM orders AS ord  JOIN meal AS ml ON ord.meal_id=ml.id WHERE ml.uid=$uid AND ord.status='Active'";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'pending_order':
+                $query = "SELECT COUNT(*) FROM orders AS ord  JOIN meal AS ml ON ord.meal_id=ml.id WHERE ml.uid=$uid AND ord.status='Pending'";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'completed_order':
+                $query = "SELECT COUNT(*) FROM orders AS ord  JOIN meal AS ml ON ord.meal_id=ml.id WHERE ml.uid=$uid AND ord.status='Completed'";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'all_responses':
+                $query = "SELECT COUNT(*) FROM response WHERE responsed_by_uid=$uid";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'responses_review':
+                $query = "SELECT COUNT(*) FROM response WHERE responsed_by_uid=$uid AND `status`='reviewing'";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            case 'responses_accepted':
+                $query = "SELECT COUNT(*) FROM response WHERE responsed_by_uid=$uid AND `status`='ordered'";
+                $result = mysqli_fetch_array(mysqli_query($con, $query));
+                return $result['COUNT(*)'];
+                break;
+
+            default:
+                return 'N/A';
+                break;
+        }
+    }
+
 
 ?>
