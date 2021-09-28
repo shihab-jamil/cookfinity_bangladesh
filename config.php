@@ -23,6 +23,7 @@
         return $result['first_name'].' '.$result['last_name'];
     }
 
+
     function get_all_meal_details(){
         $con = $GLOBALS['con'];
         $query = "SELECT ml.*, us.first_name, us.last_name, us.image AS 'user_image' FROM meal AS ml JOIN users AS us ON ml.uid = us.id";
@@ -221,5 +222,26 @@
        mysqli_query($con, $query2);
        
    }
+
+   function get_all_meal_details_per_user($uid){
+        $con = $GLOBALS['con'];
+        $query = "SELECT ml.*,cat.title AS 'category_title' FROM meal AS ml JOIN category AS cat ON ml.category_id=cat.id WHERE ml.uid=$uid";
+        return mysqli_query($con, $query);
+   }
+
+   function time_conversion($time){
+        $time = explode(":",$time);
+        $time[0] = intval($time[0]);
+        $str = '';
+        if($time[0] > 12){
+                $time[0] = $time[0] - 12;
+                $str .= 'PM';
+            }else{
+                $str .= 'AM';
+            }
+
+        return $time[0].':'.$time[1].' '.$str;
+    }
+
 
 ?>
