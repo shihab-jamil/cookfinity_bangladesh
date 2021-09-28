@@ -37,7 +37,29 @@
         $id = intval($id) + 1;
         return $id;
     }
+    function insert_order($req_id){
+        $details = get_single_table_record('requests', 'id', $req_id);
 
+       $ordered_by_uid = $details['requested_by_uid'];
+       $meal_id = 12;
+       $quantity = $details['quantity'];
+       $address = $details['address'];
+       $delivery_date = $details['delivery_date'];
+       $delivery_time = $details['delivery_time'];
+       $price = 500;
+
+
+       $query = "INSERT INTO `orders`(`ordered_by_uid`, `meal_id`, `quantity`, `price`, `status`, `address`, `delivery_date`, `delivery_time`) VALUES ($ordered_by_uid, $meal_id, $quantity, $price, 'confirmed', '$address', '$delivery_date', '$delivery_time')";
+       // echo $query;
+       mysqli_query($con, $query);
+
+       $query1 = "DELETE FROM response WHERE request_id=$req_id";
+       mysqli_query($con, $query1);
+
+       $query2 = "DELETE FROM requests WHERE id =$req_id";
+       mysqli_query($con, $query2);
+       
+   }
 
 
 ?>
