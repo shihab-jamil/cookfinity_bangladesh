@@ -312,5 +312,11 @@
         }
     }
 
+    function get_users_per_role($role_id){
+        $con = $GLOBALS['con'];
+        $query = "SELECT * FROM users WHERE platform_role_id=$role_id";
+        return mysqli_query($con, $query);
+    }
+
 
 ?>
