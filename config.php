@@ -198,5 +198,28 @@
         $query = "SELECT app.id, CONCAT(us.first_name, ' ', us.last_name) AS 'name', rol.role_name, us.email, us.phone_number, app.status, app.approved_by_uid FROM users AS us JOIN approval AS app ON us.id = app.uid JOIN roles AS rol ON us.platform_role_id = rol.id WHERE rol.role_name = 'Home Cook' ORDER BY app.status DESC";
         return mysqli_query($con, $query);
     }
+    function insert_order($req_id){
+        $details = get_single_table_record('requests', 'id', $req_id);
+
+       $ordered_by_uid = $details['requested_by_uid'];
+       $meal_id = 12;
+       $quantity = $details['quantity'];
+       $address = $details['address'];
+       $delivery_date = $details['delivery_date'];
+       $delivery_time = $details['delivery_time'];
+       $price = 500;
+
+
+       $query = "INSERT INTO `orders`(`ordered_by_uid`, `meal_id`, `quantity`, `price`, `status`, `address`, `delivery_date`, `delivery_time`) VALUES ($ordered_by_uid, $meal_id, $quantity, $price, 'confirmed', '$address', '$delivery_date', '$delivery_time')";
+       // echo $query;
+       mysqli_query($con, $query);
+
+       $query1 = "DELETE FROM response WHERE request_id=$req_id";
+       mysqli_query($con, $query1);
+
+       $query2 = "DELETE FROM requests WHERE id =$req_id";
+       mysqli_query($con, $query2);
+       
+   }
 
 ?>
