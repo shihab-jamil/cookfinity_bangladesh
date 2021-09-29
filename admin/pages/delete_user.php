@@ -4,7 +4,7 @@
     $query = "DELETE FROM users WHERE id = $id";
     $query_balance_delete = "DELETE FROM `balance` WHERE `user_id`=$id";
 
-    if(mysqli_query($con, $query) && mysqli_query($con, $query_balance_delete)){
+    if(mysqli_query($con, $query_balance_delete) && mysqli_query($con, $query)){
         $_SESSION['delete_user'] = 'success';
         header('location: ../?page=admin_portal');
     }else{

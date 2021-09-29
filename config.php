@@ -200,7 +200,9 @@
         return mysqli_query($con, $query);
     }
     function insert_order($req_id){
-        $details = get_single_table_record('requests', 'id', $req_id);
+       global $con;
+
+       $details = get_single_table_record('requests', 'id', $req_id);
 
        $ordered_by_uid = $details['requested_by_uid'];
        $meal_id = 12;
