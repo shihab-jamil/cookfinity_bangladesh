@@ -1,5 +1,6 @@
 <?php
   require_once('../config.php');
+  require_once('./pages/modals.php');
 
   if(!isset($_SESSION['email'])){
     header('location: ../index.php');
